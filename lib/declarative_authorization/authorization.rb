@@ -671,10 +671,9 @@ module Authorization
       case hash_or_attr
       when Symbol
         attr_value = object_attribute_value(object, hash_or_attr)
-        case attr_value
-        when nil
+        if attr_value.nil?
           raise NilAttributeValueError, "Attribute #{hash_or_attr.inspect} is nil in #{object.inspect}."
-        when Enumerable
+        elsif attr_value.is_a?(Enumerable)
           attr_value.any? do |inner_value|
             attr_validator.engine.permit? @privilege, :object => inner_value, :user => attr_validator.user
           end
